@@ -1,73 +1,93 @@
-create table Department(
-Dept_id int primary key,
-Dept_name varchar(20) not null unique
+-- Create Department table
+CREATE TABLE Department (
+    Dept_id INT PRIMARY KEY,
+    Dept_name VARCHAR(30) NOT NULL UNIQUE
 );
 
-create table Employee(
-Emp_id int primary key ,
-Emp_name varchar(20)not null,
-Emp_email varchar(20) unique not null,
-Emp_phone varchar(20) unique not null,
-Dept_id int ,
-foreign key (Dept_id)references Department(Dept_id)
+-- Create Employee table
+CREATE TABLE Employee (
+    Emp_id INT PRIMARY KEY,
+    Emp_name VARCHAR(30) NOT NULL,
+    Emp_email VARCHAR(40) UNIQUE NOT NULL,
+    Emp_phone VARCHAR(15) UNIQUE NOT NULL,
+    Dept_id INT,
+    FOREIGN KEY (Dept_id) REFERENCES Department(Dept_id)
 );
 
-create table Project(
-Proj_id integer primary key,
-Proj_name varchar(20) not null,
-Proj_startDate varchar(20) not null,
-Proj_EndDate varchar(20) not null,
-Proj_Assign_Emp int,
-foreign key (Proj_Assign_Emp) references Employee(Emp_id)
+-- Create Project table
+CREATE TABLE Project (
+    Proj_id INT PRIMARY KEY,
+    Proj_name VARCHAR(40) NOT NULL,
+    Proj_startDate DATE NOT NULL,
+    Proj_endDate DATE NOT NULL,
+    Proj_Assign_Emp INT,
+    FOREIGN KEY (Proj_Assign_Emp) REFERENCES Employee(Emp_id)
 );
 
-insert into Department (Dept_id,Dept_name)
-values
-(1, 'Human Resources'),
-(2, 'Engineering'),
-(3, 'Marketing'),
-(4, 'Finance');
-
-insert into Employee (Emp_id,Emp_name,Emp_email,Emp_phone,Dept_id)
-values
-(101, 'Amit Sharma', 'amit@gmail.com', '9876543210', 2),
-(102, 'Neha Verma', 'neha@gmail.com', '9123456780', 2),
-(103, 'Rohit Singh', 'rohit@gmail.com', '9988776655', 1),
-(104, 'Priya Mehta', 'priya@gmail.com', '9090909090', 3),
-(105, 'Ram Sen', 'Ram@gmail.com', '555555555', 4);
-
-insert into Project(Proj_id, Proj_name, Proj_startDate, Proj_EndDate, Proj_Assign_Emp)
-values
-(1, 'AI Chatbot', '2026-01-01', '2026-06-30', 101),
-(2, 'E-Commerce App', '2026-02-01', '2026-07-31', 102),
-(3, 'HR Portal', '2026-03-15', '2026-05-30', 103),
-(4, 'Marketing Website', '2026-01-20', '2026-04-20', 104);
-(5, 'Finance Website', '2025-01-20', '2026-04-20', 105);
 
 
--- update Employee 103 Department id
-update Employee set Dept_id=4 where Emp_id=103;
+-- Insert into Department
+INSERT INTO Department VALUES
+(101, 'Research'),
+(102, 'Operations'),
+(103, 'Design'),
+(104, 'Customer Support');
 
---delete Employee Data 
--- but the problem is i assign project to employee first i need to delete or update project .Then i am delete employee
-delete from Project where Proj_Assign_Emp=105;
-delete from Employee where Emp_id=105;
+-- Insert into Employee
+INSERT INTO Employee VALUES
+(301, 'Arjun Mehra', 'arjun.m@gmail.com', '8111111111', 101),
+(302, 'Pooja Nair', 'pooja.n@gmail.com', '8222222222', 102),
+(303, 'Nitin Khanna', 'nitin.k@gmail.com', '8333333333', 101),
+(304, 'Ritika Das', 'ritika.d@gmail.com', '8444444444', 103),
+(305, 'Saurabh Tiwari', 'saurabh.t@gmail.com', '8555555555', 104);
 
-select*from Department;
-
-select*from Employee;
-
-select*from Project;
-
--- create manager user
-create role CEO login password 'CEO';
-grant select on Employee ,Department ,Project to CEO;
-grant create on schema public to CEO;
-revoke select on Department from CEO;
-revoke create on schema public from CEO;
+-- Insert into Project
+INSERT INTO Project VALUES
+(21, 'Data Analysis Tool', '2026-01-05', '2026-06-05', 301),
+(22, 'Process Automation', '2026-02-10', '2026-07-15', 302),
+(23, 'UX Redesign', '2026-03-01', '2026-05-30', 304),
+(24, 'Helpdesk System', '2026-01-20', '2026-04-25', 305);
 
 
---alter table Employee Address
-alter table Employee add Address varchar(30);
 
-drop table Employee;
+-- Update Employee Department
+UPDATE Employee
+SET Dept_id = 102
+WHERE Emp_id = 303;
+
+
+
+-- Delete project before deleting employee
+DELETE FROM Project
+WHERE Proj_Assign_Emp = 305;
+
+DELETE FROM Employee
+WHERE Emp_id = 305;
+
+
+
+-- View table data
+SELECT * FROM Department;
+SELECT * FROM Employee;
+SELECT * FROM Project;
+
+
+
+-- Create user role
+CREATE ROLE TeamLead LOGIN PASSWORD 'teamlead@123';
+
+GRANT SELECT ON Department, Employee, Project TO TeamLead;
+GRANT CREATE ON SCHEMA public TO TeamLead;
+
+REVOKE SELECT ON Project FROM TeamLead;
+REVOKE CREATE ON SCHEMA public FROM TeamLead;
+
+
+
+-- Alter Employee table
+ALTER TABLE Employee ADD Address VARCHAR(50);
+
+
+
+-- Drop table (optional)
+DROP TABLE Project;
